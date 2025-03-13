@@ -67,4 +67,5 @@ public class Player {
     public void setGames(List<Game> games) {
         this.games = games;
     }
+
 }

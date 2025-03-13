@@ -1,9 +1,5 @@
 package com.example.demo.hockey;
 
-import com.example.demo.hockey.Game;
-import com.example.demo.hockey.Player;
-import com.example.demo.hockey.Team;
-import com.example.demo.hockey.HockeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +11,20 @@ public class HockeyController {
 
     @Autowired
     private HockeyService hockeyService;
+    private PlayerRepository playerRepository;
+    private TeamRepository teamRepository;
+    @Autowired
+    private GameRepository gameRepository;
+
+    @PostMapping
+    public Game createHockey(@RequestBody Game game) {
+        return gameRepository.save(game);
+    }
+    @PutMapping
+    public Player createPlayer(@RequestBody Player player) {
+        return playerRepository.save(player);
+    }
+    /// //////////////////////////////////////////
 
     @GetMapping("/teams")
     public List<Team> getAllTeams() {
@@ -31,6 +41,22 @@ public class HockeyController {
         return hockeyService.getAllGames();
     }
 
+    /// ///////////////////////////////////////////////
+
+    @GetMapping("/{id}")
+    public Player GetPlayerById(@PathVariable Long id) {
+        return playerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Your mom"));
+    }
+
+    @GetMapping("/{id}")
+    public Team GetTeamById(@PathVariable Long id) {
+        return teamRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Your mom"));
+    }
+
+    /// ///////////////////////////////////
+
     @PostMapping("/teams")
     public Team saveTeam(@RequestBody Team team) {
         return hockeyService.saveTeam(team);
@@ -45,4 +71,15 @@ public class HockeyController {
     public Game saveGame(@RequestBody Game game) {
         return hockeyService.saveGame(game);
     }
+
+    /// ////////////////////////////////////////////
+
+    @DeleteMapping
+    public void deleteTeam(@RequestBody Team team) {teamRepository.delete(team);}
+
+    @DeleteMapping
+    public void deletePlayer(@RequestBody Player player) {playerRepository.delete(player);}
+
+    /// //////////////////////////////////////////
+
 }
