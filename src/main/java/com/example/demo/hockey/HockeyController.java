@@ -11,18 +11,24 @@ public class HockeyController {
 
     @Autowired
     private HockeyService hockeyService;
+    @Autowired
     private PlayerRepository playerRepository;
+    @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private GameRepository gameRepository;
 
-    @PostMapping
+    @PostMapping("/game")
     public Game createHockey(@RequestBody Game game) {
         return gameRepository.save(game);
     }
-    @PutMapping
+    @PostMapping("/player")
     public Player createPlayer(@RequestBody Player player) {
         return playerRepository.save(player);
+    }
+    @PostMapping
+    public Team createTeam(@RequestBody Team team) {
+        return teamRepository.save(team);
     }
     /// //////////////////////////////////////////
 
@@ -43,13 +49,13 @@ public class HockeyController {
 
     /// ///////////////////////////////////////////////
 
-    @GetMapping("/{id}")
+    @GetMapping("/player/{id}")
     public Player GetPlayerById(@PathVariable Long id) {
         return playerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Your mom"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/team/{id}")
     public Team GetTeamById(@PathVariable Long id) {
         return teamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Your mom"));
@@ -73,12 +79,35 @@ public class HockeyController {
     }
 
     /// ////////////////////////////////////////////
+    @PutMapping("/player/{id}")
+    public Player updatePlayer(@PathVariable Long id, @RequestParam(required = false) String name, @RequestParam(required = false) int  age) {
+        // Check if the person with the given id exists
+        Player person = playerRepository.findById(id).orElse(null);
+        if (person != null) {
+            person.setName(name);
+            person.setAge(age);
+            return playerRepository.save(person);
+        } else {
+            return null;
+        }
+    }
+    @PutMapping("/team/{id}")
+    public Team updateTeam(@PathVariable Long id,@RequestParam(required = false) String name) {
+        Team team = teamRepository.findById(id).orElse(null);
+        if (team != null) {
+            team.setName(name);
+            return teamRepository.save(team);
 
-    @DeleteMapping
-    public void deleteTeam(@RequestBody Team team) {teamRepository.delete(team);}
+        }else {return null;}
+    }
 
-    @DeleteMapping
-    public void deletePlayer(@RequestBody Player player) {playerRepository.delete(player);}
+
+
+    @DeleteMapping("/team/{id}")
+    public void deleteTeam(@PathVariable long id) {teamRepository.deleteById(id);}
+
+    @DeleteMapping("/player/{id}")
+    public void deletePlayer(@PathVariable long id) {playerRepository.deleteById(id);}
 
     /// //////////////////////////////////////////
 
